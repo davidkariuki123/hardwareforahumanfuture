@@ -602,7 +602,7 @@ footer .dot { color: var(--dim); }
 
       const rx = 58 - enter * 46 - turn * 6;
       const ry = -14 + turn * 22;
-      const sc = (0.62 + enter * 0.38) * (1 - outT * 0.1);
+      const sc = (0.62 + enter * 0.38) * (1 - outT * 0.1) * 0.92;
       const tx = -aside * 24;
       const snapPush = scene < 1 ? 0 : ease(clamp(local / 0.10, 0, 1));
       const ty = (1 - enter) * 22 + snapPush * 16 * (1 - aside) - outT * 5;
