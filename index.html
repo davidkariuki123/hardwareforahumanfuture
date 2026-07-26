@@ -165,9 +165,9 @@ main { position: relative; z-index: 2; }
 .flash { position: absolute; right: 13%; top: 10%; width: 14%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #fffbe6 0 38%, #ddd8c4 57%, #9b9990 63%); }
 .sensor { position: absolute; right: 16%; bottom: 14%; width: 10%; aspect-ratio: 1; border-radius: 50%; background: #202225; box-shadow: inset 0 0 0 2px #666; }
 .device {
-  width: min(48vmin, 323px); aspect-ratio: 64.13 / 95.8;
+  width: min(48vmin, 323px); aspect-ratio: 62 / 88;
   transform: translateZ(14px);
-  border-radius: 21% / 14%;
+  border-radius: 12% / 8.5%;
   position: relative;
   transform-style: preserve-3d;
   will-change: transform;
@@ -185,19 +185,31 @@ main { position: relative; z-index: 2; }
 /* extruded body: stacked layers in Z make a genuine solid side wall */
 .device .z {
   position: absolute; inset: 0; border-radius: inherit;
-  background: #EFEAE0;
-  box-shadow: inset 0 0 0 1px rgba(120,110,90,.10);
+  background: #071A3A;
+  box-shadow: inset 0 0 0 1px rgba(160,190,235,.15);
 }
-.device .z:nth-of-type(1)  { transform: translateZ(-4.5px);  background: #F3EEE5; }
-.device .z:nth-of-type(2)  { transform: translateZ(-9px);  background: #EFEAE1; }
-.device .z:nth-of-type(3)  { transform: translateZ(-13.5px);  background: #EAE5DB; }
-.device .z:nth-of-type(4)  { transform: translateZ(-18px); background: #E5DFD5; }
-.device .z:nth-of-type(5)  { transform: translateZ(-22.5px); background: #E0DACF; }
-.device .z:nth-of-type(6)  { transform: translateZ(-27px); background: #DAD4C8; }
-.device .z:nth-of-type(7)  { transform: translateZ(-31.5px); background: #D5CEC2; }
-.device .z:nth-of-type(8)  { transform: translateZ(-36px); background: #CFC8BB; }
-.device .z:nth-of-type(9)  { transform: translateZ(-40.5px); background: #C9C2B4; }
-.device .z:nth-of-type(10) { transform: translateZ(-45px); background: #C3BCAE; }
+.device .z:nth-of-type(1)  { transform: translateZ(-2.2px);  background: #0B2858; }
+.device .z:nth-of-type(2)  { transform: translateZ(-4.4px);  background: #0A2552; }
+.device .z:nth-of-type(3)  { transform: translateZ(-6.6px);  background: #09224C; }
+.device .z:nth-of-type(4)  { transform: translateZ(-8.8px); background: #081F46; }
+.device .z:nth-of-type(5)  { transform: translateZ(-11px); background: #071C40; }
+.device .z:nth-of-type(6)  { transform: translateZ(-13.2px); background: #071A3A; }
+.device .z:nth-of-type(7)  { transform: translateZ(-15.4px); background: #061734; }
+.device .z:nth-of-type(8)  { transform: translateZ(-17.6px); background: #05142E; }
+.device .z:nth-of-type(9)  { transform: translateZ(-19.8px); background: #041128; }
+.device .z:nth-of-type(10) { transform: translateZ(-22px); background: #030E22; }
+.device .render {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: inherit;
+  filter: drop-shadow(0 2px 2px rgba(5, 12, 28, .22));
+  pointer-events: none;
+  user-select: none;
+  z-index: 2;
+}
 /* the top face: pillowed ceramic with a curved glaze */
 .device .top {
   position: absolute; inset: 0; border-radius: inherit;
@@ -460,10 +472,8 @@ footer .dot { color: var(--dim); }
             <div class="cast"></div>
             <i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i>
             <i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i>
-            <div class="top">
-              <svg class="engrave" viewBox="0 0 100.0 65.3" aria-hidden="true"><use href="#relay-tree"/></svg>
-              <div class="ember"></div>
-            </div>
+            <img class="render" src="assets/relay-device-top.webp" alt="Relay in polished midnight-cobalt ceramic" draggable="false">
+            <div class="ember"></div>
           </div>
         </div>
       </div>
