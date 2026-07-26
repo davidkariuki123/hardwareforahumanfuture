@@ -311,7 +311,38 @@ main { position: relative; z-index: 2; }
 }
 
 /* the close */
-.act.close { justify-content: center; padding-bottom: 0; gap: 3svh; }
+.act.close {
+  min-height: 100svh;
+  justify-content: center;
+  gap: 0;
+  padding: clamp(110px, 16svh, 170px) 24px clamp(72px, 10svh, 110px);
+  background: #0B0B0C;
+  color: #F5F5F7;
+}
+.close-copy { max-width: 900px; }
+.close-eyebrow {
+  margin-bottom: 18px;
+  color: #A1A1A6;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.act.close .headline {
+  max-width: 16ch;
+  color: inherit;
+  font-size: clamp(40px, 5.2vw, 72px);
+  font-weight: 500;
+  letter-spacing: -.04em;
+  line-height: 1.02;
+  text-shadow: none;
+}
+.close-sub {
+  margin-top: 24px;
+  color: #A1A1A6;
+  font-size: clamp(18px, 2vw, 24px);
+  letter-spacing: -.015em;
+}
 
 .cta {
   display: inline-block;
@@ -322,24 +353,33 @@ main { position: relative; z-index: 2; }
 }
 .cta:hover { transform: translateY(-2px); }
 .preorder-card {
-  width: min(480px, 92vw); padding: 24px 24px 22px;
-  border-radius: 24px; color: #26241F;
-  background: rgba(255,255,255,.92);
-  box-shadow: 0 20px 70px rgba(26,23,17,.23);
-  backdrop-filter: blur(14px);
+  width: min(720px, 100%);
+  margin-top: clamp(52px, 8svh, 82px);
+  padding-top: 28px;
+  border-top: 1px solid #2C2C2E;
+  color: #F5F5F7;
 }
-.preorder-price { font-size: clamp(34px, 5vw, 48px); font-weight: 550; letter-spacing: -.035em; }
-.preorder-label { margin-top: 2px; font-size: 14px; color: #6d685f; }
-.preorder-card .cta { margin-top: 18px; width: 100%; background: #26241F; color: #fff; }
-.preorder-facts { margin-top: 15px; font-size: 12.5px; line-height: 1.55; color: #6d685f; text-wrap: balance; }
-.preorder-facts a { border-bottom: 1px solid rgba(38,36,31,.3); }
+.preorder-offer { display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+.preorder-price { font-size: clamp(30px, 4vw, 42px); font-weight: 500; letter-spacing: -.035em; }
+.preorder-label { margin-top: 3px; font-size: 13px; color: #86868B; }
+.preorder-card .cta {
+  min-width: 150px;
+  background: #F5F5F7;
+  color: #1D1D1F;
+  text-align: center;
+}
+.preorder-facts { margin-top: 22px; font-size: 13px; line-height: 1.55; color: #A1A1A6; }
+.preorder-terms { margin-top: 8px; font-size: 11px; line-height: 1.55; color: #6E6E73; }
+.preorder-terms a { border-bottom: 1px solid #4A4A4E; }
 .quiet-link {
-  font-size: 13px; font-weight: 400; color: rgba(255,255,255,.85);
-  text-shadow: 0 1px 18px rgba(0,0,0,.5);
-  border: 1px solid rgba(255,255,255,.35);
-  background: rgba(20,18,14,.28);
-  border-radius: 999px; padding: 7px 12px;
-  backdrop-filter: blur(8px);
+  margin-top: 42px;
+  font-size: 12px;
+  color: #86868B;
+  border-bottom: 1px solid #3A3A3C;
+}
+@media (max-width: 560px) {
+  .preorder-offer { align-items: flex-start; flex-direction: column; }
+  .preorder-card .cta { width: 100%; }
 }
 
 /* honesty, folded small */
@@ -389,7 +429,7 @@ footer .dot { color: var(--dim); }
 
 <header class="mark on-glass" id="mark">
   <a class="name" href="#top">relay</a>
-  <a class="go" href="#reserve">Reserve</a>
+  <a class="go" href="#reserve">Pre-order</a>
 </header>
 
 <main id="top">
@@ -432,14 +472,23 @@ footer .dot { color: var(--dim); }
   </div>
 
   <section class="act close" id="reserve">
-    <h2 class="headline">Relay puts the phone<br>back in your pocket.</h2>
-    <div class="preorder-card">
-      <div class="preorder-price">$299</div>
-      <div class="preorder-label">Relay preorder · taxes added at checkout</div>
-      <a class="cta" href="https://buy.stripe.com/14AeVe7MA5BhfYj0COe3e00">Preorder Relay</a>
-      <p class="preorder-facts">Expected to ship by December 31, 2026. Free standard US shipping. Cancel any time before shipment for a full refund. By ordering, you agree to the <a href="preorder-policy.html">Preorder Terms</a> and <a href="terms.html">Terms of Sale</a>.</p>
+    <div class="close-copy">
+      <p class="close-eyebrow">Relay</p>
+      <h2 class="headline">Put the phone back in your pocket.</h2>
+      <p class="close-sub">Screen-free AI, ready when you speak.</p>
     </div>
-    <a class="quiet-link" href="#honest">What it does not do</a>
+    <div class="preorder-card">
+      <div class="preorder-offer">
+        <div>
+          <div class="preorder-price">$299</div>
+          <div class="preorder-label">plus applicable tax</div>
+        </div>
+        <a class="cta" href="https://buy.stripe.com/14AeVe7MA5BhfYj0COe3e00">Pre-order</a>
+      </div>
+      <p class="preorder-facts">Expected by December 31, 2026 · Free standard US shipping · Full refund any time before shipment</p>
+      <p class="preorder-terms">By pre-ordering, you agree to the <a href="preorder-policy.html">Preorder Terms</a> and <a href="terms.html">Terms of Sale</a>.</p>
+    </div>
+    <a class="quiet-link" href="#honest">Product limitations</a>
   </section>
 
 </main>
