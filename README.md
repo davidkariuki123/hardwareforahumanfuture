@@ -1,8 +1,8 @@
-# hardwareforahumanfuture.com
+# Relay
 
-The Relay website. Fonts and imagery are inlined in `index.html`; the optimized
-hero videos are separate so browsers can stream and cache them efficiently.
-Served by GitHub Pages at hardwareforahumanfuture.com.
+The production Relay preorder website for `sendrelays.com`. Fonts and imagery
+are inlined in `index.html`; the optimized hero videos remain separate so
+browsers can stream and cache them efficiently. Stripe hosts checkout and sends
+payment and refund receipts.
 
-Source of truth for edits: the `relay` repo, branch `site/relay-no1-prototype`,
-under `site/relay-no1/` (source.html + assets + build snippet in its README).
+Source of truth for edits: the `relay` repo under `site/relay-no1/`.
