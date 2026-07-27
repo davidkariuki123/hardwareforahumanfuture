@@ -625,10 +625,14 @@ footer .dot { color: var(--dim); }
       const contactProjection = pixelsPerMm * 0.35;
       const mountedZ = phoneZ + bodyDepth + contactProjection;
       contactShadow.style.transform = 'translateZ(' + (-(bodyDepth + contactProjection)).toFixed(2) + 'px)';
-      const mountedMix = ease(clamp(snapT / 0.72, 0, 1));
-      detachedDevice.style.opacity = (1 - mountedMix).toFixed(3);
-      mountedDevice.style.opacity = mountedMix.toFixed(3);
-      contactShadow.style.opacity = mountedMix.toFixed(3);
+      /* Preserve the approved product render without reshaping it. Swap to
+         the exact mounted projection only at physical contact; blending two
+         camera views creates a false second device between them. */
+      detachedDevice.style.transform = 'translate(-50%, -50%)';
+      const isMounted = snapT >= 0.9995;
+      detachedDevice.style.opacity = isMounted ? '0' : '1';
+      mountedDevice.style.opacity = isMounted ? '1' : '0';
+      contactShadow.style.opacity = isMounted ? '1' : '0';
       let z = 90 - approach * (90 - mountedZ);
       if (snapT > 0.92) {
         const s = (snapT - 0.92) / 0.08;
