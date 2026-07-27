@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>Relay</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Relay is a small, screen-free AI companion for the back of your phone. Preorder for $299.">
 <style>
 @font-face {
@@ -292,6 +292,18 @@ main { position: relative; z-index: 2; }
   opacity: 0; will-change: opacity;
 }
 @media (max-width: 760px) {
+  .sky { width: 100dvw; height: 100dvh; }
+  .act.open {
+    min-height: 100dvh;
+    padding-right: max(20px, env(safe-area-inset-right));
+    padding-bottom: max(12dvh, calc(env(safe-area-inset-bottom) + 32px));
+    padding-left: max(20px, env(safe-area-inset-left));
+  }
+  .mark {
+    padding-top: max(22px, calc(env(safe-area-inset-top) + 10px));
+    padding-right: max(20px, calc(env(safe-area-inset-right) + 20px));
+    padding-left: max(20px, calc(env(safe-area-inset-left) + 20px));
+  }
   .cmd { left: 50%; transform: translateX(-50%); width: 88vw; top: 14svh; text-align: center; font-size: clamp(24px, 6.4vw, 34px); }
 }
 .tap {
