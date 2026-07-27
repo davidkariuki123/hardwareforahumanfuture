@@ -189,25 +189,25 @@ main { position: relative; z-index: 2; }
   border-radius: inherit;
   background: rgba(38, 32, 22, .30);
   filter: blur(13px);
-  transform: translateZ(-49px);
+  transform: translateZ(-30px);
   z-index: 0;
 }
 /* extruded body: stacked layers in Z make a genuine solid side wall */
 .device .z {
   position: absolute; inset: 0; border-radius: inherit;
-  background: #071A3A;
-  box-shadow: inset 0 0 0 1px rgba(160,190,235,.15);
+  background: #A49D92;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.22);
 }
-.device .z:nth-of-type(1)  { transform: translateZ(-2.2px);  background: #0B2858; }
-.device .z:nth-of-type(2)  { transform: translateZ(-4.4px);  background: #0A2552; }
-.device .z:nth-of-type(3)  { transform: translateZ(-6.6px);  background: #09224C; }
-.device .z:nth-of-type(4)  { transform: translateZ(-8.8px); background: #081F46; }
-.device .z:nth-of-type(5)  { transform: translateZ(-11px); background: #071C40; }
-.device .z:nth-of-type(6)  { transform: translateZ(-13.2px); background: #071A3A; }
-.device .z:nth-of-type(7)  { transform: translateZ(-15.4px); background: #061734; }
-.device .z:nth-of-type(8)  { transform: translateZ(-17.6px); background: #05142E; }
-.device .z:nth-of-type(9)  { transform: translateZ(-19.8px); background: #041128; }
-.device .z:nth-of-type(10) { transform: translateZ(-22px); background: #030E22; }
+.device .z:nth-of-type(1)  { transform: translateZ(-1px);  background: #C9C3BA; }
+.device .z:nth-of-type(2)  { transform: translateZ(-2px);  background: #C5BFB6; }
+.device .z:nth-of-type(3)  { transform: translateZ(-3px);  background: #C1BBB2; }
+.device .z:nth-of-type(4)  { transform: translateZ(-4px);  background: #BDB7AE; }
+.device .z:nth-of-type(5)  { transform: translateZ(-5px);  background: #B9B3AA; }
+.device .z:nth-of-type(6)  { transform: translateZ(-6px);  background: #B5AFA6; }
+.device .z:nth-of-type(7)  { transform: translateZ(-7px);  background: #B1ABA2; }
+.device .z:nth-of-type(8)  { transform: translateZ(-8px);  background: #ADA79E; }
+.device .z:nth-of-type(9)  { transform: translateZ(-9px);  background: #A9A39A; }
+.device .z:nth-of-type(10) { transform: translateZ(-10px); background: #A49D92; }
 .device .render {
   position: absolute;
   inset: 0;
@@ -471,13 +471,13 @@ footer .dot { color: var(--dim); }
       <div class="persp" id="persp">
         <div class="rig" id="rig">
           <div class="phone" id="phone" aria-hidden="true">
-            <img class="phone-real" src="assets/iphone-17-pro-back.webp" alt="" draggable="false">
+            <img class="phone-real" src="assets/iphone-graphite-back.webp" alt="Graphite iPhone Pro" draggable="false">
           </div>
           <div class="device" id="device">
             <div class="cast"></div>
             <i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i>
             <i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i>
-            <img class="render" src="assets/relay-device-top.webp" alt="Relay in polished midnight-cobalt ceramic" draggable="false">
+            <img class="render" src="assets/relay-thin-top.webp" alt="Relay Thin in precision-finished champagne aluminum with an engraved relay wordmark" draggable="false">
             <div class="ember"></div>
           </div>
         </div>
