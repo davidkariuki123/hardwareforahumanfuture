@@ -213,6 +213,20 @@ main { position: relative; z-index: 2; }
   user-select: none;
   z-index: 3;
 }
+.device .webgl-product {
+  position: absolute;
+  inset: -14% -20%;
+  width: 140%;
+  height: 128%;
+  pointer-events: none;
+  user-select: none;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity .16s linear;
+}
+.device.webgl-ready .webgl-product { opacity: 1; }
+.device.webgl-ready .exact-detached,
+.device.webgl-ready .render { visibility: hidden; }
 /* the top face: pillowed ceramic with a curved glaze */
 .device .top {
   position: absolute; inset: 0; border-radius: inherit;
@@ -490,6 +504,7 @@ footer .dot { color: var(--dim); }
             <div class="cast"></div>
             <img class="exact-detached" id="device-detached" src="assets/relay-exact-detached.webp" alt="" draggable="false">
             <img class="render" id="device-mounted" src="assets/relay-thin-top-v2.webp" alt="Relay Thin in precision-finished champagne aluminum with an engraved RELAY wordmark" draggable="false">
+            <canvas class="webgl-product" id="relay-3d" aria-label="Dimensionally accurate 3D model of Relay Thin"></canvas>
             <div class="ember"></div>
           </div>
         </div>
@@ -625,14 +640,22 @@ footer .dot { color: var(--dim); }
       const contactProjection = pixelsPerMm * 0.35;
       const mountedZ = phoneZ + bodyDepth + contactProjection;
       contactShadow.style.transform = 'translateZ(' + (-(bodyDepth + contactProjection)).toFixed(2) + 'px)';
-      /* Preserve the approved product render without reshaping it. Swap to
-         the exact mounted projection only at physical contact; blending two
-         camera views creates a false second device between them. */
-      detachedDevice.style.transform = 'translate(-50%, -50%)';
-      const isMounted = snapT >= 0.9995;
-      detachedDevice.style.opacity = isMounted ? '0' : '1';
-      mountedDevice.style.opacity = isMounted ? '1' : '0';
-      contactShadow.style.opacity = isMounted ? '1' : '0';
+      /* The released CAD model owns the visible transition. The raster views
+         remain only as a no-WebGL fallback; they are never blended. */
+      if (window.relay3D && window.relay3D.ready) {
+        window.relay3D.update(snapT);
+        detachedDevice.style.opacity = '0';
+        mountedDevice.style.opacity = '0';
+        contactShadow.style.opacity = ease(clamp((snapT - 0.82) / 0.18, 0, 1)).toFixed(3);
+      } else {
+        /* A single image remains visible if WebGL is unavailable. It follows
+           the existing parent transform continuously; never introduce a
+           discrete second-frame handoff on constrained browsers. */
+        detachedDevice.style.transform = 'translate(-50%, -50%)';
+        detachedDevice.style.opacity = '1';
+        mountedDevice.style.opacity = '0';
+        contactShadow.style.opacity = ease(clamp((snapT - 0.82) / 0.18, 0, 1)).toFixed(3);
+      }
       let z = 90 - approach * (90 - mountedZ);
       if (snapT > 0.92) {
         const s = (snapT - 0.92) / 0.08;
@@ -705,3 +728,7 @@ footer .dot { color: var(--dim); }
   }
 })();
 </script>
+<script type="importmap">
+{"imports":{"three":"./assets/vendor/three.module.min.js"}}
+</script>
+<script type="module" src="assets/relay-3d.js?v=11"></script>
