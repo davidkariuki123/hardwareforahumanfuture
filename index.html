@@ -197,6 +197,7 @@ main { position: relative; z-index: 2; }
   position: absolute; inset: 0; border-radius: inherit;
   background: #A49D92;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.22);
+  display: none;
 }
 .device .z:nth-of-type(1)  { transform: translateZ(-1px);  background: #C9C3BA; }
 .device .z:nth-of-type(2)  { transform: translateZ(-2px);  background: #C5BFB6; }
@@ -471,7 +472,7 @@ footer .dot { color: var(--dim); }
       <div class="persp" id="persp">
         <div class="rig" id="rig">
           <div class="phone" id="phone" aria-hidden="true">
-            <img class="phone-real" src="assets/iphone-graphite-back.webp" alt="Graphite iPhone Pro" draggable="false">
+            <img class="phone-real" src="assets/iphone-graphite-back-v2.webp" alt="Graphite iPhone Pro" draggable="false">
           </div>
           <div class="device" id="device">
             <div class="cast"></div>
@@ -609,7 +610,8 @@ footer .dot { color: var(--dim); }
       }
       const ds = 1 + aside * 0.10;
       const seat = approach * 86 * (1 - aside);
-      device.style.transform = 'translateZ(' + z.toFixed(1) + 'px) translateY(' + seat.toFixed(1) + 'px) scale(' + ds.toFixed(3) + ')';
+      const seatX = -10 * approach * (1 - aside);
+      device.style.transform = 'translateX(' + seatX.toFixed(1) + 'px) translateZ(' + z.toFixed(1) + 'px) translateY(' + seat.toFixed(1) + 'px) scale(' + ds.toFixed(3) + ')';
       ground.style.opacity = (enter * (1 - snapT * 0.85 * (1 - aside * 0.4))).toFixed(2);
 
       const ringT = scene === 1 ? clamp((local - 0.96) / 0.04, 0, 1) : 0;
