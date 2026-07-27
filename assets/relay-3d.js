@@ -6,7 +6,13 @@ const canvas = document.getElementById('relay-3d');
 const device = document.getElementById('device');
 
 if (canvas && device && window.WebGLRenderingContext) {
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    alpha: true,
+    antialias: true,
+    premultipliedAlpha: false,
+    powerPreference: 'high-performance',
+  });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -92,6 +98,13 @@ if (canvas && device && window.WebGLRenderingContext) {
       // already converted by the exporter.  Preserve the approved artwork's
       // top-to-bottom orientation.
       approvedTexture.flipY = false;
+      // Treat the baked product render as an sRGB photograph.  Without this
+      // declaration WebGL interprets it as linear data, washing out the metal
+      // grain and making the surface look synthetic.
+      approvedTexture.colorSpace = THREE.SRGBColorSpace;
+      approvedTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      approvedTexture.minFilter = THREE.LinearMipmapLinearFilter;
+      approvedTexture.magFilter = THREE.LinearFilter;
       approvedTexture.needsUpdate = true;
       new GLTFLoader().load(
         './assets/models/relay-thin-authoritative.glb?v=6',
@@ -105,7 +118,11 @@ if (canvas && device && window.WebGLRenderingContext) {
           approvedFront.material = new THREE.MeshBasicMaterial({
             map: approvedTexture,
             transparent: true,
-            alphaTest: 0.01,
+            // Discard the source render's low-alpha drop-shadow fringe.  The
+            // former 0.01 threshold preserved it and produced a pale blur
+            // around the rotating device.
+            alphaTest: 0.5,
+            alphaToCoverage: true,
             side: THREE.DoubleSide,
             toneMapped: false,
           });
