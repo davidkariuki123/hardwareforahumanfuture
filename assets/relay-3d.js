@@ -13,7 +13,7 @@ if (canvas && device && window.WebGLRenderingContext) {
     premultipliedAlpha: false,
     powerPreference: 'high-performance',
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 3));
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -46,9 +46,12 @@ if (canvas && device && window.WebGLRenderingContext) {
   }
 
   function resize() {
-    const rect = canvas.getBoundingClientRect();
-    const width = Math.max(1, Math.round(rect.width));
-    const height = Math.max(1, Math.round(rect.height));
+    // clientWidth/clientHeight are the canvas's untransformed layout size.
+    // getBoundingClientRect() includes the hero's opening scale transform; it
+    // previously allocated a small render buffer that was then enlarged and
+    // blurred as Relay approached the phone.
+    const width = Math.max(1, Math.round(canvas.clientWidth));
+    const height = Math.max(1, Math.round(canvas.clientHeight));
     renderer.setSize(width, height, false);
     const aspect = width / height;
     const viewHeight = 1.16;
@@ -107,7 +110,7 @@ if (canvas && device && window.WebGLRenderingContext) {
       approvedTexture.magFilter = THREE.LinearFilter;
       approvedTexture.needsUpdate = true;
       new GLTFLoader().load(
-        './assets/models/relay-thin-authoritative.glb?v=6',
+        './assets/models/relay-thin-authoritative.glb?v=7',
         (gltf) => {
           model = gltf.scene;
           const approvedFront = model.getObjectByName('ApprovedFront');

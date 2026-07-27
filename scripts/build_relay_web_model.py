@@ -27,6 +27,21 @@ DEPTH = 5.15 * MM
 CORNER_RADIUS = 7.2 * MM
 APPROVED_FACE_Z = DEPTH / 2 + 0.55 * MM
 
+# The approved face render has a small asymmetric transparent gutter.  Its
+# alpha>=0.5 silhouette is (10, 9)–(988, 1581) in a 988×1585 image.  Align the
+# physical perimeter to that measured silhouette so it cannot protrude around
+# the top/left edge as a doubled grey rim when viewed head-on.
+FACE_IMAGE_WIDTH = 988.0
+FACE_IMAGE_HEIGHT = 1585.0
+FACE_ALPHA_LEFT = 10.0
+FACE_ALPHA_TOP = 9.0
+FACE_ALPHA_RIGHT = 988.0
+FACE_ALPHA_BOTTOM = 1581.0
+FRAME_WIDTH = WIDTH * (FACE_ALPHA_RIGHT - FACE_ALPHA_LEFT) / FACE_IMAGE_WIDTH
+FRAME_HEIGHT = HEIGHT * (FACE_ALPHA_BOTTOM - FACE_ALPHA_TOP) / FACE_IMAGE_HEIGHT
+FRAME_X = WIDTH * (((FACE_ALPHA_LEFT + FACE_ALPHA_RIGHT) / 2) - FACE_IMAGE_WIDTH / 2) / FACE_IMAGE_WIDTH
+FRAME_Y = -HEIGHT * (((FACE_ALPHA_TOP + FACE_ALPHA_BOTTOM) / 2) - FACE_IMAGE_HEIGHT / 2) / FACE_IMAGE_HEIGHT
+
 
 def srgb(hex_colour: str) -> tuple[float, float, float, float]:
     value = hex_colour.lstrip("#")
@@ -44,7 +59,7 @@ def material(name: str, colour: str, metallic: float, roughness: float):
     return mat
 
 
-def rounded_prism(name: str, width: float, height: float, depth: float, radius: float, z: float, mat, segments: int = 12):
+def rounded_prism(name: str, width: float, height: float, depth: float, radius: float, z: float, mat, segments: int = 12, x: float = 0, y: float = 0):
     """Create an exact rounded-rectangle extrusion without isotropic cube bevels."""
     radius = min(radius, width / 2, height / 2)
     cx = width / 2 - radius
@@ -62,7 +77,7 @@ def rounded_prism(name: str, width: float, height: float, depth: float, radius: 
 
     bottom_z = z - depth / 2
     top_z = z + depth / 2
-    vertices = [(x, y, bottom_z) for x, y in outline] + [(x, y, top_z) for x, y in outline]
+    vertices = [(px + x, py + y, bottom_z) for px, py in outline] + [(px + x, py + y, top_z) for px, py in outline]
     count = len(outline)
     faces = [tuple(reversed(range(count))), tuple(range(count, count * 2))]
     faces.extend((i, (i + 1) % count, (i + 1) % count + count, i + count) for i in range(count))
@@ -151,8 +166,8 @@ def main():
     aperture = material("Recessed apertures", "#393735", 0.18, 0.62)
 
     product_objects = []
-    product_objects.append(rounded_prism("Relay structural frame", WIDTH, HEIGHT, DEPTH, CORNER_RADIUS, 0, frame))
-    product_objects.append(rounded_prism("Dark perimeter seam", WIDTH - 1.20 * MM, HEIGHT - 1.20 * MM, 0.35 * MM, CORNER_RADIUS - 0.55 * MM, DEPTH / 2 + 0.20 * MM, seam))
+    product_objects.append(rounded_prism("Relay structural frame", FRAME_WIDTH, FRAME_HEIGHT, DEPTH, CORNER_RADIUS, 0, frame, x=FRAME_X, y=FRAME_Y))
+    product_objects.append(rounded_prism("Dark perimeter seam", FRAME_WIDTH - 1.20 * MM, FRAME_HEIGHT - 1.20 * MM, 0.35 * MM, CORNER_RADIUS - 0.55 * MM, DEPTH / 2 + 0.20 * MM, seam, x=FRAME_X, y=FRAME_Y))
     product_objects.append(add_approved_front(face))
 
     # The front texture already contains the exact pressure surface, notch,
