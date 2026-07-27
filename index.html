@@ -294,7 +294,8 @@ main { position: relative; z-index: 2; }
 @media (max-width: 760px) {
   .sky { width: 100dvw; height: 100dvh; }
   .act.open {
-    min-height: 100dvh;
+    min-height: 100vh;
+    min-height: calc(100lvh + 2px);
     padding-right: max(20px, env(safe-area-inset-right));
     padding-bottom: max(12dvh, calc(env(safe-area-inset-bottom) + 32px));
     padding-left: max(20px, env(safe-area-inset-left));
