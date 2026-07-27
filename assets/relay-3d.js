@@ -39,6 +39,7 @@ if (canvas && device && window.WebGLRenderingContext) {
   scene.add(fill);
 
   let model = null;
+  let sideSurfaces = [];
   let currentProgress = 0;
 
   function ease(value) {
@@ -79,6 +80,17 @@ if (canvas && device && window.WebGLRenderingContext) {
     model.rotation.z = THREE.MathUtils.lerp(0.105, 0, p);
     model.position.y = THREE.MathUtils.lerp(-0.012, 0, p);
     model.position.z = THREE.MathUtils.lerp(0.08, 0, p);
+
+    // The approved photographic face already contains the complete machined
+    // perimeter.  A second live perimeter behind it creates a grey doubled
+    // arc at the corners when viewed head-on.  Keep physical side geometry
+    // for oblique views, then fade it away before the mounted endpoint so the
+    // final silhouette is exactly the approved render and nothing else.
+    const sideOpacity = 1 - THREE.MathUtils.smoothstep(p, 0.78, 0.98);
+    for (const surface of sideSurfaces) {
+      surface.material.opacity = sideOpacity;
+      surface.visible = sideOpacity > 0.001;
+    }
     renderer.render(scene, camera);
   }
 
@@ -128,6 +140,14 @@ if (canvas && device && window.WebGLRenderingContext) {
             alphaToCoverage: true,
             side: THREE.DoubleSide,
             toneMapped: false,
+          });
+          sideSurfaces = [];
+          model.traverse((object) => {
+            if (!object.isMesh || object === approvedFront) return;
+            object.material = object.material.clone();
+            object.material.transparent = true;
+            object.material.depthWrite = false;
+            sideSurfaces.push(object);
           });
           scene.add(model);
           window.relay3D.ready = true;
