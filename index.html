@@ -308,7 +308,7 @@ main { position: relative; z-index: 2; }
     bottom: auto;
     left: 0;
     width: 100dvw;
-    height: 100lvh;
+    height: calc(100lvh + 160px);
   }
   .sky.mobile-fixed {
     position: fixed;
@@ -316,9 +316,9 @@ main { position: relative; z-index: 2; }
   }
   .act.open {
     min-height: 100vh;
-    min-height: calc(100lvh + 2px);
+    min-height: calc(100lvh + 160px);
     padding-right: max(20px, env(safe-area-inset-right));
-    padding-bottom: max(12dvh, calc(env(safe-area-inset-bottom) + 32px));
+    padding-bottom: calc(160px + max(12dvh, calc(env(safe-area-inset-bottom) + 32px)));
     padding-left: max(20px, env(safe-area-inset-left));
   }
   .mark {
