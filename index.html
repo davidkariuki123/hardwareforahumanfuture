@@ -191,21 +191,6 @@ main { position: relative; z-index: 2; }
   filter: blur(13px);
   z-index: 0;
 }
-/*
- * Physical body extrusion. JavaScript spaces these slices across the exact
- * 5.15 mm nominal body depth at the current responsive 62 mm width scale.
- */
-.device .z {
-  position: absolute;
-  left: .8%; right: 1.2%; top: .15%; bottom: .2%;
-  border-radius: 12.9% / 9.1%;
-  background: #A49D92;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.22);
-}
-.device .z:nth-of-type(-n+5)  { background: #C9C3BA; }
-.device .z:nth-of-type(n+6):nth-of-type(-n+11) { background: #BDB7AE; }
-.device .z:nth-of-type(n+12):nth-of-type(-n+16) { background: #B1ABA2; }
-.device .z:nth-of-type(n+17) { background: #A49D92; }
 .device .render {
   position: absolute;
   inset: 0;
@@ -217,6 +202,16 @@ main { position: relative; z-index: 2; }
   pointer-events: none;
   user-select: none;
   z-index: 2;
+}
+.device .exact-detached {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 118%; height: auto;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(16px 25px 22px rgba(42, 37, 29, .24));
+  pointer-events: none;
+  user-select: none;
+  z-index: 3;
 }
 /* the top face: pillowed ceramic with a curved glaze */
 .device .top {
@@ -493,11 +488,8 @@ footer .dot { color: var(--dim); }
           </div>
           <div class="device" id="device">
             <div class="cast"></div>
-            <i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i>
-            <i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i>
-            <i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i>
-            <i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i><i class="z"></i>
-            <img class="render" src="assets/relay-thin-top-v2.webp" alt="Relay Thin in precision-finished champagne aluminum with an engraved RELAY wordmark" draggable="false">
+            <img class="exact-detached" id="device-detached" src="assets/relay-exact-detached.webp" alt="" draggable="false">
+            <img class="render" id="device-mounted" src="assets/relay-thin-top-v2.webp" alt="Relay Thin in precision-finished champagne aluminum with an engraved RELAY wordmark" draggable="false">
             <div class="ember"></div>
           </div>
         </div>
@@ -543,7 +535,8 @@ footer .dot { color: var(--dim); }
   const persp = document.getElementById('persp');
   const phone = document.getElementById('phone');
   const device = document.getElementById('device');
-  const bodySlices = Array.from(device.querySelectorAll('.z'));
+  const detachedDevice = document.getElementById('device-detached');
+  const mountedDevice = document.getElementById('device-mounted');
   const contactShadow = device.querySelector('.cast');
   let pressLit = false;
   const cmd = document.getElementById('cmd');
@@ -609,8 +602,10 @@ footer .dot { color: var(--dim); }
       const aside = scene === 1 ? ease(clamp((local - 0.32) / 0.08, 0, 1)) : 0;
       const outT = scene === 1 ? ease(clamp((local - 0.96) / 0.04, 0, 1)) : 0;
 
-      const rx = 58 - enter * 46 - turn * 6;
-      const ry = -14 + turn * 22;
+      /* The detached sprite is the approved oblique product render itself.
+         Only the mounted state needs the restrained phone-plane turn. */
+      const rx = turn * 6;
+      const ry = turn * 8;
       const sc = (0.62 + enter * 0.38) * (1 - outT * 0.1) * 0.92;
       const tx = -aside * 24;
       const snapPush = scene < 1 ? 0 : ease(clamp(local / 0.10, 0, 1));
@@ -629,11 +624,11 @@ footer .dot { color: var(--dim); }
       const bodyDepth = pixelsPerMm * 5.15;
       const contactProjection = pixelsPerMm * 0.35;
       const mountedZ = phoneZ + bodyDepth + contactProjection;
-      bodySlices.forEach((slice, index) => {
-        const depth = bodyDepth * (index + 1) / bodySlices.length;
-        slice.style.transform = 'translateZ(' + (-depth).toFixed(2) + 'px)';
-      });
       contactShadow.style.transform = 'translateZ(' + (-(bodyDepth + contactProjection)).toFixed(2) + 'px)';
+      const mountedMix = ease(clamp(snapT / 0.72, 0, 1));
+      detachedDevice.style.opacity = (1 - mountedMix).toFixed(3);
+      mountedDevice.style.opacity = mountedMix.toFixed(3);
+      contactShadow.style.opacity = mountedMix.toFixed(3);
       let z = 90 - approach * (90 - mountedZ);
       if (snapT > 0.92) {
         const s = (snapT - 0.92) / 0.08;
