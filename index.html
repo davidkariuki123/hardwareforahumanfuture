@@ -301,7 +301,19 @@ main { position: relative; z-index: 2; }
   opacity: 0; will-change: opacity;
 }
 @media (max-width: 760px) {
-  .sky { width: 100dvw; height: 100lvh; }
+  .sky {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: 100dvw;
+    height: 100lvh;
+  }
+  .sky.mobile-fixed {
+    position: fixed;
+    top: 0;
+  }
   .act.open {
     min-height: 100vh;
     min-height: calc(100lvh + 2px);
@@ -557,6 +569,7 @@ footer .dot { color: var(--dim); }
   const cmd = document.getElementById('cmd');
   const ground = document.getElementById('ground');
   const sky = document.querySelector('.sky');
+  const mobileViewport = matchMedia('(max-width: 760px)');
   const lines = Array.from(document.querySelectorAll('.line'));
   const heroLine = document.getElementById('hero-line');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -578,6 +591,7 @@ footer .dot { color: var(--dim); }
 
   function frame() {
     const vh = innerHeight;
+    if (sky) sky.classList.toggle('mobile-fixed', mobileViewport.matches && scrollY > 2);
     const r = track.getBoundingClientRect();
     const span = r.height - vh;
     let t = clamp(-r.top / span, 0, 1);
