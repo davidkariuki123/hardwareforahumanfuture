@@ -65,6 +65,9 @@ a { color: inherit; text-decoration: none; }
   position: fixed; inset: 0; z-index: 0;
   width: 100vw; height: 100svh; object-fit: cover;
 }
+/* When Low Power Mode defers playback, show a clean poster — not a play badge. */
+.sky::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; }
+.sky::-webkit-media-controls { display: none !important; }
 .veil {
   position: fixed; inset: 0; z-index: 1;
   background: var(--cloud);
@@ -775,7 +778,16 @@ footer .dot { color: var(--dim); }
     const tryPlay = () => { sky.muted = true; const p = sky.play(); if (p && p.catch) p.catch(() => {}); };
     if (!reduced) {
       tryPlay();
-      document.addEventListener('click', tryPlay, { once: true, capture: true });
+      /* Low Power Mode blocks autoplay and only unlocks play() inside a real
+         gesture handler. A phone's first gesture is usually a scroll, which
+         never fires click — so retry on any touch. The listeners stay armed
+         for the page's lifetime: iOS can re-pause the video later (tab
+         background, decoder eviction, LPM engaging mid-session) and each
+         retry is just a paused-check when playback is already rolling. */
+      const gestures = ['touchstart', 'touchend', 'pointerdown', 'click'];
+      const resume = () => { if (sky.paused) tryPlay(); };
+      gestures.forEach(e => document.addEventListener(e, resume, { capture: true, passive: true }));
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && sky.paused) tryPlay(); });
     } else {
       sky.removeAttribute('autoplay'); sky.pause();
     }
