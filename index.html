@@ -577,6 +577,18 @@ footer .dot { color: var(--dim); }
   const ground = document.getElementById('ground');
   const sky = document.querySelector('.sky');
   const mobileViewport = matchMedia('(max-width: 760px)');
+  const reserve = document.getElementById('reserve');
+  /* Safari paints the status-bar band and home-indicator zone with the body's
+     background-color only — no page content ever composites there. Feed it a
+     live sample of the video's top edge so the chrome bands read as the video. */
+  const chromeMeta = document.createElement('meta');
+  chromeMeta.name = 'theme-color';
+  document.head.appendChild(chromeMeta);
+  const tintCanvas = document.createElement('canvas');
+  tintCanvas.width = 32; tintCanvas.height = 6;
+  const tintCtx = tintCanvas.getContext('2d', { willReadFrequently: true });
+  let heroTone = [60, 58, 20];
+  let lastTintAt = 0, lastChrome = '', lastChromeAt = 0;
   const lines = Array.from(document.querySelectorAll('.line'));
   const heroLine = document.getElementById('hero-line');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -614,6 +626,41 @@ footer .dot { color: var(--dim); }
     veil.style.opacity = (v * 0.62).toFixed(3);
     if (sky) sky.style.filter = 'blur(' + (v * 24).toFixed(1) + 'px) brightness(' + (1 + v * 0.08).toFixed(3) + ')';
     mark.classList.toggle('on-glass', v < 0.5);
+
+    if (mobileViewport.matches) {
+      const now = performance.now();
+      if (sky && now - lastTintAt > 400 && sky.readyState >= 2 && sky.videoWidth) {
+        lastTintAt = now;
+        try {
+          /* the cover-cropped rows adjacent to the status bar */
+          tintCtx.drawImage(sky, sky.videoWidth * 0.17, sky.videoHeight * 0.135, sky.videoWidth * 0.66, sky.videoHeight * 0.06, 0, 0, 32, 6);
+          const d = tintCtx.getImageData(0, 0, 32, 6).data;
+          let sr = 0, sg = 0, sb = 0;
+          for (let i = 0; i < d.length; i += 4) { sr += d[i]; sg += d[i + 1]; sb += d[i + 2]; }
+          const n = d.length / 4;
+          heroTone = [sr / n, sg / n, sb / n];
+        } catch (e) {}
+      }
+      const rr = reserve.getBoundingClientRect();
+      const closeT = clamp(Math.min(vh - rr.top, rr.bottom) / (vh * 0.9), 0, 1);
+      const mixc = (a, b, k) => a + (b - a) * k;
+      let cr = mixc(heroTone[0], 250, arrive), cg = mixc(heroTone[1], 248, arrive), cb = mixc(heroTone[2], 243, arrive);
+      cr = mixc(cr, 11, closeT); cg = mixc(cg, 11, closeT); cb = mixc(cb, 12, closeT);
+      const chrome = 'rgb(' + Math.round(cr) + ',' + Math.round(cg) + ',' + Math.round(cb) + ')';
+      /* Safari's band tint stops tracking body color if it is rewritten every
+         frame; throttled writes keep it following, and the running rAF loop
+         re-asserts the settled color within one interval of scroll rest. */
+      if (chrome !== lastChrome && now - lastChromeAt > 400) {
+        document.body.style.backgroundColor = chrome;
+        chromeMeta.content = chrome;
+        lastChrome = chrome;
+        lastChromeAt = now;
+      }
+    } else if (lastChrome) {
+      document.body.style.backgroundColor = '';
+      chromeMeta.content = '';
+      lastChrome = '';
+    }
 
     let scene = 0, local = 0;
     if (t < starts[1]) { scene = 0; local = t / starts[1]; }
